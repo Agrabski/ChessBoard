@@ -42,8 +42,8 @@ namespace ChessBoard
 	{
 		Board() :moveIterator(this)
 		{
-			for (int y = 2; y < 6; y++)
-				for (int x = 0; x < 6; x++)
+			for (int y = 0; y < 8; y++)
+				for (int x = 0; x < 8; x++)
 					fields[x][y].rank = { Empty, false };
 
 			for (int x = 0; x < 8; x++)
@@ -54,14 +54,14 @@ namespace ChessBoard
 			fields[0][0].rank = { Tower,true };
 			fields[7][0].rank = { Tower,true };
 			fields[0][7].rank = fields[7][7].rank = { Tower,false };
-			fields[1][0].rank = fields[6][0].rank = { Knight,false };
-			fields[1][7].rank = fields[6][7].rank = { Knight,true };
+			fields[1][0].rank = fields[6][0].rank = { Knight,true };
+			fields[1][7].rank = fields[6][7].rank = { Knight,false };
 			fields[2][0].rank = fields[5][0].rank = { Bishop,true };
 			fields[2][7].rank = fields[5][7].rank = { Bishop,false };
-			fields[3][0].rank = { King,true };
-			fields[3][7].rank = { King,false };
-			fields[4][0].rank = { Queen,false };
-			fields[4][7].rank = { Queen,true };
+			fields[3][0].rank = { Queen,true };
+			fields[3][7].rank = { Queen,false };
+			fields[4][0].rank = { King,true };
+			fields[4][7].rank = { King,false };
 		}
 		const std::pair<short, short> QueenMovementArray[8] = { { -1,0 },{ -1,1 },{ 0,1 },{ 1,1 },{ 1,0 },{ 1,-1 },{ 0,-1 },{ -1,-1 } };
 		const std::pair<short, short> KnightMovementArray[8] = { { -2,-1 },{ -2,1 },{ -1,2 },{ 1,2 },{ 2,1 },{ 2,-1 },{ -2,1 },{ -2,-1 } };
@@ -74,7 +74,10 @@ namespace ChessBoard
 		Field fields[8][8];
 		std::vector<std::pair<Board, int>> prevBoard;
 		bool nextMoveIsWhite = true;
-
+		bool leftWhite = true;
+		bool rightWhite = true;
+		bool leftBlack = true;
+		bool rightBlack = true;
 		struct Moves
 		{
 			Moves(Board *Parent)

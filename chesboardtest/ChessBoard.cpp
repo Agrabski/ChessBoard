@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 
+#pragma once
 
 #ifndef PROGRAM_NAME
 #define PROGRAM_NAME "Valkirye"
@@ -134,17 +135,21 @@ namespace ChessBoard
 			fields[lastMove.to.first][lastMove.to.second].rank = Beaten;
 			return;
 		case(RochadeLeft):
-			if (isWhite)
+			if (!nextMoveIsWhite)
 			{
 				fields[0][0].rank = { Tower, true };
 				fields[4][0].rank = { King,true };
 				fields[2][0].rank = { Empty,true };
 				fields[3][0].rank = { Empty,true };
+				leftWhite = true;
+				rightWhite = true;
 			}
 			else
 			{
-
+				leftBlack = true;
+				rightBlack = true;
 			}
+			break;
 		case(RochadeRight):
 		default:
 			throw std::runtime_error(PROGRAM_NAME + std::string(" ERROR:Storred move type was corrupted (invalid internal move type)"));
@@ -170,7 +175,7 @@ namespace ChessBoard
 	void ChessBoard::Board::ChangeState(ChessBoard::InternalMove lastMove)
 	{
 		Rank currentlyMoved = fields[lastMove.from.first][lastMove.from.second].rank;
-		if (currentlyMoved.isWhite != nextMoveIsWhite)
+		if (currentlyMoved.isWhite != nextMoveIsWhite&&lastMove.from != std::pair<short, short>(-1,-1))
 			throw WRONG_COLOR();
 		std::pair<short, short> relativeMove = { lastMove.to.first - lastMove.from.first,lastMove.to.second - lastMove.from.second };
 
@@ -211,6 +216,8 @@ namespace ChessBoard
 				{
 
 				}
+			default:
+				break;
 			}
 
 			}
@@ -241,6 +248,34 @@ namespace ChessBoard
 			//TODO handle move
 			break;
 		case(RochadeRight):
+			if (nextMoveIsWhite)
+			{
+				if (rightWhite && fields[5][0].coveredByBlack == 0 && fields[5][0].rank.type == Empty && fields[6][0].coveredByBlack == 0 && fields[6][0].rank.type == Empty)
+				{
+					fields[4][0].rank.type = Empty;
+					fields[7][0].rank.type = Empty;
+					fields[6][0].rank = { King, true };
+					fields[5][0].rank = { Tower,true };
+					rightWhite = false;
+					leftWhite = false;
+				}
+				else
+					throw INVALID_MOVE();
+			}
+			else
+			{
+				if (rightBlack && fields[5][7].coveredByWhite == 0 && fields[5][7].rank.type == Empty && fields[6][7].coveredByWhite == 0 && fields[6][7].rank.type == Empty)
+				{
+					fields[4][7].rank.type = Empty;
+					fields[7][7].rank.type = Empty;
+					fields[6][7].rank = { King, false };
+					fields[5][7].rank = { Tower,false };
+					rightBlack = false;
+					leftBlack = false;
+				}
+				else
+					throw INVALID_MOVE();
+			}
 			//TODO handle move
 			break;
 		default:
@@ -263,7 +298,7 @@ namespace ChessBoard
 			if (err.isWhite != currentlyMoved.isWhite)
 				this->Revert(currentlyMoved.isWhite);
 			else
-				throw INVALID_MOVE();
+				throw err;
 		}
 	}
 
@@ -364,7 +399,27 @@ namespace ChessBoard
 
 	ChessBoard::Board::Moves & ChessBoard::Board::Moves::operator++()
 	{
-		if (parent->fields[currentRank.first][currentRank.second].rank.type == Empty)
+		delete state;
+		if (currentRank == std::pair<short, short>(-1, -1))
+		{
+			switch (moveIterator)
+			{
+			case(0):
+				state = new InternalMove({ 0,0 }, { 0,0 }, RochadeLeft);
+				moveIterator++;
+				return*this;
+			case(1):
+				state = new InternalMove({ 0,0 }, { 0,0 }, RochadeLeft);
+				moveIterator++;
+				return*this;
+			default:
+				currentRank = std::pair<short, short>(0, 0);
+				moveIterator = 0;
+				direction = 0;
+				break;
+			}
+		}
+		if (parent->fields[currentRank.first][currentRank.second].rank.type == Empty || parent->fields[currentRank.first][currentRank.second].rank.isWhite != this->isWhite)
 		{
 			for (; currentRank.first < 8 || parent->fields[currentRank.first][currentRank.second].rank.type == Empty || parent->fields[currentRank.first][currentRank.second].rank.isWhite != this->isWhite; currentRank.first++)
 				for (; currentRank.second < 8 || parent->fields[currentRank.first][currentRank.second].rank.type == Empty || parent->fields[currentRank.first][currentRank.second].rank.isWhite != this->isWhite; currentRank.second++);
@@ -376,7 +431,7 @@ namespace ChessBoard
 			return *this;
 		}
 
-		delete state;
+
 		switch (parent->fields[currentRank.first][currentRank.second].rank.type)
 		{
 		case(Pawn):
@@ -866,7 +921,7 @@ namespace ChessBoard
 
 	bool const Rank::operator!=(Rank const & right)
 	{
-		return this->type == right.type && (this->isWhite == right.isWhite);
+		return this->type != right.type || (this->isWhite != right.isWhite);
 	}
 
 }
