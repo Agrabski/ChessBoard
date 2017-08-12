@@ -2,7 +2,8 @@
 
 #include <stdlib.h>
 #include <vector>
-#include "C:\Users\adam_000\Desktop\chesss\judgeDredd.h"
+#include "judgeDredd.h"
+#include <math.h>
 
 namespace ChessBoard
 {
@@ -25,6 +26,7 @@ namespace ChessBoard
 		Move ConvertToExternal(bool amIWhite);
 	};
 
+	int sign(int x);
 
 	struct Rank
 	{

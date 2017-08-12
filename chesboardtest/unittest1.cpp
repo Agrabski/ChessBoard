@@ -8,9 +8,14 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+#define MAKE_MOVE(x1,y1,x2,y2)board.ChangeState( ChessBoard::InternalMove({x1-1,y1-1},{x2-1,y2-1},ChessBoard::Standard));
+#define RANK(x,y) archetype.fields[x][y].rank
+#define MOVE(x1,y1,x2,y2) board.ChangeState(ChessBoard::InternalMove({ x1,y1 }, { x2,y2 }, ChessBoard::Standard));
+
+
 namespace chesboardtest
 {		
-	TEST_CLASS(UnitTest1)
+	TEST_CLASS(BorderlineCases)
 	{
 	public:
 
@@ -61,7 +66,7 @@ namespace chesboardtest
 			}
 			Assert::Fail();
 		}
-#define MOVE(x1,y1,x2,y2) board.ChangeState(ChessBoard::InternalMove({ x1,y1 }, { x2,y2 }, ChessBoard::Standard));
+
 		TEST_METHOD(MoveAfterCheckmate)
 		{
 			ChessBoard::Board board;
@@ -84,9 +89,77 @@ namespace chesboardtest
 			Assert::Fail();
 		}
 
-#define MAKE_MOVE(x1,y1,x2,y2)board.ChangeState( ChessBoard::InternalMove({x1-1,y1-1},{x2-1,y2-1},ChessBoard::Standard));
-#define RANK(x,y) archetype.fields[x][y].rank
 
+		TEST_METHOD(InvalidTowerMove)
+		{
+
+			ChessBoard::Board board;
+			try
+			{
+				MOVE(7, 0, 7, 5);
+			}
+			catch (ChessBoard::INVALID_MOVE)
+			{
+				Assert::IsTrue(true);
+			}
+			board = ChessBoard::Board();
+			MOVE(6, 1, 6, 3);
+			MOVE(6, 6, 6, 5);
+			try
+			{
+				MOVE(7, 0, 4, 3);
+			}
+			catch (ChessBoard::INVALID_MOVE)
+			{
+				Assert::IsTrue(true);
+				return;
+			}
+			Assert::Fail();
+		}
+
+		TEST_METHOD(InvalidKnightMove)
+		{
+			ChessBoard::Board board;
+			try
+			{
+				board.ChangeState(ChessBoard::InternalMove({ 0,1 }, { 0,2 }, ChessBoard::Standard));
+			}
+			catch (ChessBoard::INVALID_MOVE)
+			{
+				Assert::IsTrue(true);
+			}
+			try
+			{
+				board.ChangeState(ChessBoard::InternalMove({ 0,1 }, { 2,5 }, ChessBoard::Standard));
+			}
+			catch (ChessBoard::INVALID_MOVE)
+			{
+				Assert::IsTrue(true);
+			}
+		}
+
+		TEST_METHOD(InvalidBishopMove)
+		{
+			ChessBoard::Board board;
+			ChessBoard::Board archetype;
+			board.ChangeState(ChessBoard::InternalMove({ 2,1 }, { 2,3 }, ChessBoard::Standard));
+			archetype.ChangeState(ChessBoard::InternalMove({ 2,1 }, { 2,3 }, ChessBoard::Standard));
+			board.ChangeState(ChessBoard::InternalMove({ 0,6 }, { 0,7 }, ChessBoard::Standard));
+			archetype.ChangeState(ChessBoard::InternalMove({ 0,6 }, { 0,7 }, ChessBoard::Standard));
+			try
+			{
+				board.ChangeState(ChessBoard::InternalMove({ 2,0 }, { 2,2 }, ChessBoard::Standard));
+			}
+			catch (ChessBoard::INVALID_MOVE)
+			{
+				Assert::IsTrue(true);
+			}
+			Assert::IsTrue(archetype == board);
+		}
+	};
+
+	TEST_CLASS(RealGame)
+	{
 		TEST_METHOD(RochadeBothSides)
 		{
 			ChessBoard::Board board;
@@ -127,18 +200,6 @@ namespace chesboardtest
 			board.ChangeState(ChessBoard::InternalMove({ -1,-1 }, { 0,0 }, ChessBoard::RochadeRight));
 			Assert::IsTrue(archetype == board);
 		}
+
 	};
 }
-/*
-5254, 3735
-2133, 2836
-7273, 7776
-4243, 6877
-3153, 4746
-4142, 5755
-6172, 7857
-6264, 3644
-7163, 5878
-5171, 5564
-5364,
-*/

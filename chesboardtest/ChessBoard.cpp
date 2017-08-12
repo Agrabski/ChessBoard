@@ -13,6 +13,17 @@
 
 namespace ChessBoard
 {
+	int sign(int x)
+	{
+		if (x > 0)
+			return 1;
+		else
+			if (x == 0)
+				return 0;
+			else
+				return -1;
+	}
+
 	bool Board::addBoard()
 	{
 		for each (std::pair<Board, int> var in prevBoard)
@@ -219,7 +230,36 @@ namespace ChessBoard
 			default:
 				break;
 			}
-
+			case(ChessBoard::Tower):
+			{
+				if (relativeMove.first == 0)
+				{
+					for (int i = 1; abs(lastMove.from.second + i*sign(relativeMove.second)) < abs(lastMove.to.second); i++)
+						if (fields[lastMove.from.first][lastMove.from.second + i*sign(relativeMove.second)].rank.type != Empty)
+							throw INVALID_MOVE();
+				}
+				else
+				{
+					if (relativeMove.second == 0)
+					{
+						for (int i = 1; abs(lastMove.from.first + i*sign(relativeMove.first)) < abs(lastMove.to.first); i++)
+							if (fields[lastMove.from.first + i*sign(relativeMove.first)][lastMove.from.second].rank.type != Empty)
+								throw INVALID_MOVE();
+					}
+					else
+						throw INVALID_MOVE();
+				}
+			}
+			case(ChessBoard::Bishop):
+			{
+				if ((fields[lastMove.to.first][lastMove.to.second].rank.type != Empty&&fields[lastMove.to.first][lastMove.to.second].rank.isWhite == currentlyMoved.isWhite))
+					throw INVALID_MOVE();
+				if (abs(relativeMove.first) != abs(relativeMove.second))
+					throw INVALID_MOVE();
+				for (int i = 1; abs(lastMove.from.second + i*sign(relativeMove.second)) < abs(lastMove.to.second); i++)
+					if (fields[lastMove.from.first + i*sign(relativeMove.first)][lastMove.from.second + i*sign(relativeMove.second)].rank.type != Empty)
+						throw INVALID_MOVE();
+			}
 			}
 			fields[lastMove.from.first][lastMove.from.second].rank.type = Empty;
 			fields[lastMove.to.first][lastMove.to.second].rank = currentlyMoved;

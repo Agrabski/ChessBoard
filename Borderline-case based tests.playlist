@@ -1,0 +1,1 @@
+<Playlist Version="1.0"><Add Test="chesboardtest::UnitTest1::PawnBeatingEmptyField" /><Add Test="chesboardtest::UnitTest1::InvalidBishopMove" /><Add Test="chesboardtest::UnitTest1::InvalidKnightMove" /><Add Test="chesboardtest::UnitTest1::DoubleMoveWhite" /><Add Test="chesboardtest::UnitTest1::BlackMovingFirst" /></Playlist>
