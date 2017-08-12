@@ -30,3 +30,4 @@
 *.exe
 *.out
 *.app
+/chesboardtest.VC.VC.opendb
