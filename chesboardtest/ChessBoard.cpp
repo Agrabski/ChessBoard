@@ -122,6 +122,21 @@ namespace ChessBoard
 				case(King):
 					break;
 				case(Bishop):
+				{
+					for (int direction = 0; direction < 8; direction += 2)
+					{
+						for (int i = 0; i < 8 && x + QueenMovementArray[direction].first*i>0 && x + QueenMovementArray[direction].first*i < 8 && y + QueenMovementArray[direction].second*i>0 && y + QueenMovementArray[direction].second*i < 8; ++i)
+						{
+							if (isWhite)
+								fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].coveredByWhite += 1;
+							else
+								fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].coveredByBlack += 1;
+							if (fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.type != Empty)
+								break;
+						}
+					}
+
+				}
 					break;
 				}
 			}
