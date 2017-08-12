@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "C:\Users\adam_000\Desktop\chesss\MFCApplication1\MFCApplication1\Chessboard.h"
-#include "C:\Users\adam_000\Desktop\chesss\MFCApplication1\MFCApplication1\Chessboard.cpp"
+#include "Chessboard.h"
+#include "Chessboard.cpp"
 #include <functional>
 #include <stdexcpt.h>
 #pragma once
