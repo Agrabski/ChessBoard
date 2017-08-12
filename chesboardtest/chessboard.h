@@ -115,7 +115,13 @@ namespace ChessBoard
 	class KING_IN_DANGER :INVALID_MOVE
 	{
 	public:
+		bool isBlack;
 		bool isWhite;
+		KING_IN_DANGER(bool black, bool white)
+		{
+			isBlack = black;
+			isWhite = white;
+		}
 	};
 
 	class THREEFOLD_REPETITON : INVALID_MOVE

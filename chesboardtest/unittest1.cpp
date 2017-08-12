@@ -70,23 +70,21 @@ namespace chesboardtest
 		TEST_METHOD(MoveAfterCheckmate)
 		{
 			ChessBoard::Board board;
-			MOVE(5, 1, 5, 2);
+			MOVE(4, 1, 4, 2);
 			MOVE(0, 6, 0, 5);
-			MOVE(6, 0, 3, 4);
+			MOVE(5, 0, 2, 3);
 			MOVE(0, 5, 0, 4);
-			MOVE(4, 0, 7, 5);
-			MOVE(1, 6, 1, 5);
-			MOVE(7, 5, 4, 6);
+			MOVE(3, 0, 7, 4);
+			MOVE(0, 4, 0, 3);
+			MOVE(7, 4, 5, 6);
 			try
 			{
 				MOVE(1, 5, 1, 4);
 			}
 			catch (ChessBoard::KING_IN_DANGER exception)
 			{
-				Assert::IsFalse(exception.isWhite);
-				return;
+				Assert::IsFalse(exception.isWhite&&!exception.isBlack);
 			}
-			Assert::Fail();
 		}
 
 

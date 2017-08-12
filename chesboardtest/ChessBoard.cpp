@@ -47,7 +47,10 @@ namespace ChessBoard
 
 	void ChessBoard::Board::PaintTheMap()
 	{
+		bool blackCheck = false;
+		bool whiteCheck = false;
 		for (int x = 0; x < 8; ++x)
+		{
 			for (int y = 0; y < 8; ++y)
 			{
 				bool isWhite = fields[x][y].rank.isWhite;
@@ -58,16 +61,34 @@ namespace ChessBoard
 					if (fields[x][y].rank.isWhite)
 					{
 						if (x + 1 < 8 && y + 1 < 8)
+						{
 							fields[x + 1][y + 1].coveredByWhite += 1;
+							if (fields[x + 1][y + 1].rank.type == King && !fields[x + 1][y + 1].rank.isWhite)
+								blackCheck = true;
+						}
+
 						if (x - 1 > 0 && y + 1 < 8)
+						{
 							fields[x - 1][y + 1].coveredByWhite += 1;
+							if (fields[x - 1][y + 1].rank.type == King && !fields[x - 1][y + 1].rank.isWhite)
+								blackCheck = true;
+						}
+
 					}
 					else
 					{
 						if (x + 1 < 8 && y - 1 > 0)
+						{
 							fields[x + 1][y - 1].coveredByBlack += 1;
+							if (fields[x + 1][y - 1].rank.type == King && fields[x + 1][y - 1].rank.isWhite)
+								whiteCheck = true;
+						}
 						if (x - 1 > 0 && y - 1 > 0)
+						{
 							fields[x - 1][y - 1].coveredByBlack += 1;
+							if (fields[x - 1][y - 1].rank.type == King && fields[x - 1][y - 1].rank.isWhite)
+								whiteCheck = true;
+						}
 					}
 					break;
 				}
@@ -78,9 +99,17 @@ namespace ChessBoard
 						for (int i = 1; i < 8 && x + QueenMovementArray[direction].first*i>0 && x + QueenMovementArray[direction].first*i < 8 && y + QueenMovementArray[direction].second*i>0 && y + QueenMovementArray[direction].second*i < 8; ++i)
 						{
 							if (isWhite)
+							{
 								fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].coveredByWhite += 1;
+								if (fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.type == King&&fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.isWhite != isWhite)
+									blackCheck = true;
+							}
 							else
+							{
 								fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].coveredByBlack += 1;
+								if (fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.type == King&&fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.isWhite != isWhite)
+									whiteCheck = true;
+							}
 							if (fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.type != Empty)
 								break;
 						}
@@ -109,9 +138,17 @@ namespace ChessBoard
 						for (int i = 1; i < 8 && x + QueenMovementArray[direction].first*i>0 && x + QueenMovementArray[direction].first*i < 8 && y + QueenMovementArray[direction].second*i>0 && y + QueenMovementArray[direction].second*i < 8; ++i)
 						{
 							if (isWhite)
+							{
 								fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].coveredByWhite += 1;
+								if (fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.type == King&&fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.isWhite != isWhite)
+									blackCheck = true;
+							}
 							else
+							{
 								fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].coveredByBlack += 1;
+								if (fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.type == King&&fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.isWhite != isWhite)
+									whiteCheck = true;
+							}
 							if (fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.type != Empty)
 								break;
 						}
@@ -125,21 +162,32 @@ namespace ChessBoard
 				{
 					for (int direction = 0; direction < 8; direction += 2)
 					{
-						for (int i = 0; i < 8 && x + QueenMovementArray[direction].first*i>0 && x + QueenMovementArray[direction].first*i < 8 && y + QueenMovementArray[direction].second*i>0 && y + QueenMovementArray[direction].second*i < 8; ++i)
+						for (int i = 1; i < 8 && x + QueenMovementArray[direction].first*i>0 && x + QueenMovementArray[direction].first*i < 8 && y + QueenMovementArray[direction].second*i>0 && y + QueenMovementArray[direction].second*i < 8; ++i)
 						{
 							if (isWhite)
+							{
 								fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].coveredByWhite += 1;
+								if (fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.type == King&&fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.isWhite != isWhite)
+									blackCheck = true;
+							}
 							else
+							{
 								fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].coveredByBlack += 1;
+								if (fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.type == King&&fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.isWhite != isWhite)
+									whiteCheck = true;
+							}
 							if (fields[x + QueenMovementArray[direction].first*i][y + QueenMovementArray[direction].second*i].rank.type != Empty)
 								break;
 						}
 					}
 
 				}
-					break;
+				break;
 				}
 			}
+		}
+		if (blackCheck || whiteCheck)
+			throw KING_IN_DANGER(blackCheck, whiteCheck);
 	}
 
 	void ChessBoard::Board::Revert(bool isWhite)
@@ -346,14 +394,15 @@ namespace ChessBoard
 		}
 		try
 		{
-			PaintTheMap(lastMove);
+			PaintTheMap();
 		}
 		catch (KING_IN_DANGER err)
 		{
-			if (err.isWhite != currentlyMoved.isWhite)
+			if ((err.isWhite && currentlyMoved.isWhite) || (err.isBlack && !currentlyMoved.isWhite))
+			{
 				this->Revert(currentlyMoved.isWhite);
-			else
 				throw err;
+			}
 		}
 	}
 
